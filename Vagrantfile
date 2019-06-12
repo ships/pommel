@@ -1,8 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$script = <<SCRIPT
-echo "Installing Docker..."
+def script_for(ipaddr) {
+  %Q^echo "Installing Docker..."
 sudo apt-get update
 sudo apt-get remove docker docker-engine docker.io
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
@@ -47,7 +47,7 @@ cat <<-EOF
 
   [Service]
   Restart=on-failure
-  ExecStart=/usr/bin/consul agent -dev
+  ExecStart=/usr/bin/consul agent -dev #{ipaddr}
   ExecReload=/bin/kill -HUP $MAINPID
 
   [Install]
@@ -86,9 +86,9 @@ cat <<-EOF
 EOF
 ) | sudo tee /etc/systemd/system/nomad.service
 sudo systemctl enable nomad.service
-sudo systemctl start nomad
+sudo systemctl start nomad ^
+end
 
-SCRIPT
 
 num_servers=3
 num_workers=1
@@ -98,11 +98,12 @@ Vagrant.configure(2) do |config|
   (0...num_servers).each do |i|
     config.vm.define "s#{i}" do |server|
       server.vm.hostname = "nomad-s#{i}"
+      myip = "192.168.1.4#{i}"
 
       # Expose the nomad api and ui to the host
-      server.vm.network "public_network", bridge: "eno1", ip: "192.168.1.4#{i}"
+      server.vm.network "public_network", bridge: "eno1", ip: myip
       server.vm.provision "file", source: "./resources/server.hcl.#{i}", destination: "/tmp/config.hcl"
-      server.vm.provision "shell", inline: $script, privileged: false
+      server.vm.provision "shell", inline: script_for(myip), privileged: false
       server.vm.provider "virtualbox" do |vb|
         vb.memory = "256"
       end
@@ -112,11 +113,12 @@ Vagrant.configure(2) do |config|
   (0...num_workers).each do |j|
     config.vm.define "w#{j}" do |worker|
       worker.vm.hostname = "nomad-w#{j}"
+      myip = "192.168.1.5#{i}"
 
       # Expose the nomad api and ui to the host
-      worker.vm.network "public_network", bridge: "eno1", ip: "192.168.1.5#{j}"
+      worker.vm.network "public_network", bridge: "eno1", ip: myip
       worker.vm.provision "file", source: "./resources/client.hcl", destination: "/tmp/config.hcl"
-      worker.vm.provision "shell", inline: $script, privileged: false
+      worker.vm.provision "shell", inline: script_for(myip), privileged: false
       worker.vm.provider "virtualbox" do |vb|
         vb.memory = "4096"
       end
