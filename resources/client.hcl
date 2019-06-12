@@ -4,6 +4,8 @@ log_level = "DEBUG"
 # Setup data dir
 data_dir = "/opt/nomad/client"
 
+bind_addr = "192.168.1.50"
+
 client {
   enabled = true
   servers = [
