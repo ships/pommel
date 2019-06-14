@@ -31,7 +31,8 @@ Vagrant.configure(2) do |config|
       server.vm.provision "file", source: "./resources/consul/server.hcl.#{i}", destination: "/tmp/config-consul.hcl"
       server.vm.provision "shell", inline: script_for(myip), privileged: false
       server.vm.provider "virtualbox" do |vb|
-        vb.memory = "256"
+        vb.linked_clone = true
+        vb.memory = "512"
       end
     end
   end
@@ -47,6 +48,7 @@ Vagrant.configure(2) do |config|
       worker.vm.provision "file", source: "./resources/consul/client.hcl", destination: "/tmp/config-consul.hcl"
       worker.vm.provision "shell", inline: script_for(myip), privileged: false
       worker.vm.provider "virtualbox" do |vb|
+        vb.linked_clone = true
         vb.memory = "4096"
       end
     end
