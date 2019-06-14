@@ -10,3 +10,4 @@ client_addr = "0.0.0.0"
 
 retry_join = ["192.168.1.40"]
 rejoin_after_leave = true
+ui = true

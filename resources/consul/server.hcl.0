@@ -11,5 +11,4 @@ client_addr = "0.0.0.0"
 server = true
 retry_join = ["192.168.1.42", "192.168.1.41"]
 bootstrap_expect = 3
-ui = true
 rejoin_after_leave = true
