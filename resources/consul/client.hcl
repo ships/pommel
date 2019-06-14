@@ -2,7 +2,7 @@
 log_level = "DEBUG"
 
 # Setup data dir
-data_dir = "/etc/nomad.d"
+data_dir = "/etc/consul.d"
 
 bind_addr = "192.168.1.50"
 client_addr = "192.168.1.50"
