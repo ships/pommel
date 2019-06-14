@@ -48,7 +48,7 @@ def script_for(ipaddr)
 
       [Service]
       Restart=on-failure
-      ExecStart=/usr/bin/consul agent -dev -bind #{ipaddr}
+      ExecStart=/usr/bin/consul agent -dev -bind #{ipaddr} -client #{ipaddr}
       ExecReload=/bin/kill -HUP $MAINPID
 
       [Install]
