@@ -8,6 +8,7 @@ bind_addr = "192.168.1.45"
 
 client {
   enabled = true
+  network_interface = "eth1"
 }
 
 
