@@ -40,7 +40,8 @@ Vagrant.configure(2) do |config|
   (0...num_workers).each do |j|
     config.vm.define "w#{j}" do |worker|
       worker.vm.hostname = "nomad-w#{j}"
-      myip = "192.168.1.5#{j}"
+      num = 45 + j
+      myip = "192.168.1.#{num}"
 
       # Expose the nomad api and ui to the host
       worker.vm.network "public_network", bridge: "eno1", ip: myip
