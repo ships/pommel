@@ -1,6 +1,9 @@
 module Services
   def self.consul(ipaddr)
     <<~HEREDOC
+      sudo mkdir -p /etc/consul.d
+      sudo mv /tmp/config-consul.hcl /etc/consul.d/config.hcl
+
       (
       cat <<-EOF
         [Unit]
@@ -10,7 +13,7 @@ module Services
 
         [Service]
         Restart=on-failure
-        ExecStart=/usr/bin/consul agent -dev -bind #{ipaddr} -client #{ipaddr}
+        ExecStart=/usr/bin/consul agent -config-file /etc/consul.d/config.hcl
         ExecReload=/bin/kill -HUP $MAINPID
 
         [Install]
@@ -26,8 +29,8 @@ module Services
     <<~HEREDOC
       nomad -autocomplete-install
 
-      sudo mkdir -p /opt/nomad/
-      sudo mv /tmp/config.hcl /opt/nomad
+      sudo mkdir -p /etc/nomad.d
+      sudo mv /tmp/config.hcl /etc/nomad.d/config.hcl
 
       (
       cat <<-EOF
@@ -38,7 +41,7 @@ module Services
 
         [Service]
         Restart=on-failure
-        ExecStart=/usr/bin/nomad agent -config /opt/nomad/config.hcl
+        ExecStart=/usr/bin/nomad agent -config /etc/nomad.d/config.hcl
         ExecReload=/bin/kill -HUP $MAINPID
 
         [Install]

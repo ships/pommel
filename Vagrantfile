@@ -27,7 +27,8 @@ Vagrant.configure(2) do |config|
 
       # Expose the nomad api and ui to the host
       server.vm.network "public_network", bridge: "eno1", ip: myip
-      server.vm.provision "file", source: "./resources/server.hcl.#{i}", destination: "/tmp/config.hcl"
+      server.vm.provision "file", source: "./resources/nomad/server.hcl.#{i}", destination: "/tmp/config.hcl"
+      server.vm.provision "file", source: "./resources/consul/server.hcl.#{i}", destination: "/tmp/config-consul.hcl"
       server.vm.provision "shell", inline: script_for(myip), privileged: false
       server.vm.provider "virtualbox" do |vb|
         vb.memory = "256"
@@ -42,7 +43,8 @@ Vagrant.configure(2) do |config|
 
       # Expose the nomad api and ui to the host
       worker.vm.network "public_network", bridge: "eno1", ip: myip
-      worker.vm.provision "file", source: "./resources/client.hcl", destination: "/tmp/config.hcl"
+      worker.vm.provision "file", source: "./resources/nomad/client.hcl", destination: "/tmp/config.hcl"
+      worker.vm.provision "file", source: "./resources/consul/client.hcl", destination: "/tmp/config-consul.hcl"
       worker.vm.provision "shell", inline: script_for(myip), privileged: false
       worker.vm.provider "virtualbox" do |vb|
         vb.memory = "4096"
